@@ -1,8 +1,8 @@
-use std::cmp::{max, min};
-
-use rltk::{GameState, RGB, Rltk, VirtualKeyCode};
+use rltk::{GameState, Rltk, RGB, VirtualKeyCode};
 use specs::prelude::*;
-use specs_derive::Component;
+use std::cmp::{max, min};
+use specs_derive::*;
+
 
 #[derive(Component)]
 struct Position {
@@ -27,7 +27,7 @@ enum TileType {
 }
 
 struct State {
-    ecs: World,
+    ecs: World
 }
 
 pub fn xy_idx(x: i32, y: i32) -> usize {
@@ -42,7 +42,6 @@ fn new_map() -> Vec<TileType> {
         map[xy_idx(x, 0)] = TileType::Wall;
         map[xy_idx(x, 49)] = TileType::Wall;
     }
-
     for y in 0..50 {
         map[xy_idx(0, y)] = TileType::Wall;
         map[xy_idx(79, y)] = TileType::Wall;
@@ -99,22 +98,10 @@ fn draw_map(map: &[TileType], ctx: &mut Rltk) {
         // Render a tile depending upon the tile type
         match tile {
             TileType::Floor => {
-                ctx.set(
-                    x,
-                    y,
-                    RGB::from_f32(0.5, 0.5, 0.5),
-                    RGB::from_f32(0., 0., 0.),
-                    rltk::to_cp437('.'),
-                );
+                ctx.set(x, y, RGB::from_f32(0.5, 0.5, 0.5), RGB::from_f32(0., 0., 0.), rltk::to_cp437('.'));
             }
             TileType::Wall => {
-                ctx.set(
-                    x,
-                    y,
-                    RGB::from_f32(0., 1.5, 0.0),
-                    RGB::from_f32(0., 0., 0.),
-                    rltk::to_cp437('#'),
-                );
+                ctx.set(x, y, RGB::from_f32(0.0, 1.0, 0.0), RGB::from_f32(0., 0., 0.), rltk::to_cp437('#'));
             }
         }
 
@@ -157,8 +144,9 @@ fn main() -> rltk::BError {
     let context = RltkBuilder::simple80x50()
         .with_title("Roguelike Tutorial")
         .build()?;
-    let mut gs = State { ecs: World::new() };
-
+    let mut gs = State {
+        ecs: World::new()
+    };
     gs.ecs.register::<Position>();
     gs.ecs.register::<Renderable>();
     gs.ecs.register::<Player>();
